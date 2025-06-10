@@ -1,8 +1,7 @@
 import streamlit as st
-from transformers import AutoTokenizer, AutoModel
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import torch
 
-torch.classes.__path__ = [] 
 
 st.set_page_config(
     page_title="Translator (EN ↔ BM)",
@@ -14,8 +13,8 @@ st.set_page_config(
 @st.cache_resource
 def load_model():
     model_name = "mesolitica/t5-base-standard-bahasa-cased"
-    tokenizer = AutoTokenizer.from_pretrained(model_name, legacy=True)
-    model = AutoModel.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
         
     return tokenizer, model
 
