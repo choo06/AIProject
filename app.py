@@ -14,7 +14,7 @@ st.set_page_config(
 @st.cache_resource
 def load_model():
     model_name = "mesolitica/t5-base-standard-bahasa-cased"
-    tokenizer = AutoTokenizer.from_pretrained(model_name, legacy=True)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
         
     return tokenizer, model
