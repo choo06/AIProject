@@ -48,6 +48,7 @@ with col2_swap:
     st.write("") 
     if st.button("↔", help="Swap languages", key="swap_button"):
         st.session_state['source_lang_index'] = 1 - st.session_state['source_lang_index']
+        st.session_state.translated_text = ""
         st.rerun()
 
 with col3_lang:
