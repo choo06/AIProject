@@ -9,7 +9,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- Model Loading ---
+# Model Loading 
 @st.cache_resource
 def load_model():
     model_name = "mesolitica/t5-base-standard-bahasa-cased"
@@ -21,15 +21,19 @@ def load_model():
 # Call the cached function to load the model
 tokenizer, model = load_model()
 
-# --- Languages Available ---
+# Languages Available 
 LANG_EN = "English"
 LANG_BM = "Bahasa Malaysia"
 available_languages = [LANG_EN, LANG_BM]
 
-# --- Streamlit UI ---
+# Initialize Session State for History 
+if 'translate_history' not in st.session_state:
+    st.session_state['translate_history'] = []
+
+# Streamlit Title 
 st.title("English ↔ Bahasa Malaysia Translator")
 
-# --- Language Selection and Swap ---
+# Language Selection and Swap 
 col1_lang, col2_swap, col3_lang = st.columns([1, 0.2, 1])
 
 with col1_lang:
@@ -127,9 +131,34 @@ if st.button("Translate", key="translate_button", use_container_width=True):
 
             outputs = model.generate(**generation_kwargs)
             translated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+            st.session_state.translate_history.append({
+                    "source_lang": source_lang,
+                    "target_lang": target_lang,
+                    "source_text": input_text,
+                    "translated_text": translated_text
+                })
+                
+            st.session_state.translate_history = st.session_state.translate_history[-10:]
             
             st.session_state.translated_text = translated_text
             st.rerun()
 
         except Exception as e:
             st.error(f"An error occurred during translation: {e}")
+
+# Translation History
+with st.expander("View Translation History"):
+    if st.session_state.translate_history:
+        # Display history
+        for i, entry in enumerate(st.session_state.translate_history):
+            st.markdown(
+                f"{i+1}. From {entry['source_lang']} to {entry['target_lang']}:<br>**Source:** {entry['source_text']}<br>**Translation:** {entry['translated_text']}",
+                unsafe_allow_html=True
+            )
+            
+        if st.button("Clear History", key="clear_history_button"):
+            st.session_state.translate_history = []
+            st.rerun()
+    else:
+        st.info("No translation history yet.")
