@@ -2,7 +2,7 @@ import streamlit as st
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import torch
 
-
+torch.classes.__path__ = [] 
 st.set_page_config(
     page_title="Translator (EN ↔ BM)",
     layout="centered",
